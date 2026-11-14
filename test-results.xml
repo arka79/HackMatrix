@@ -1,0 +1,9 @@
+<testsuite name="demo" tests="3" failures="1">
+  <testcase name="test_pass" classname="tests.demo" time="0.5"/>
+  <testcase name="test_fail" classname="tests.demo" time="0.3">
+    <failure message="assertion failed">assert x == 1</failure>
+  </testcase>
+  <testcase name="test_skip" classname="tests.demo" time="0.1">
+    <skipped message="not implemented"/>
+  </testcase>
+</testsuite>

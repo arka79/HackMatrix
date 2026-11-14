@@ -34,12 +34,12 @@ DEFAULT_MAX_FILE_SIZE = 50 * 1024 * 1024  # 50 MB
 SCHEMA_VERSION = 1
 
 _RUN_ID_RE = re.compile(r"^[A-Za-z0-9_-]+$")
-_FILENAME_TS_RE = re.compile(r"^(\d{8}T\d{6})_")
+_FILENAME_TS_RE = re.compile(r"^(\d{8}T\d{6}\d{6})_")
 
 
 def _utc_now_filename() -> str:
-    """Return a sortable UTC timestamp for filenames (YYYYmmddTHHMMSS)."""
-    return datetime.now(UTC).strftime("%Y%m%dT%H%M%S")
+    """Return a sortable UTC timestamp for filenames (YYYYmmddTHHMMSSffffff)."""
+    return datetime.now(UTC).strftime("%Y%m%dT%H%M%S%f")
 
 
 def _parse_filename_timestamp(name: str) -> str | None:
@@ -193,11 +193,14 @@ class JsonStore:
 
     def get_run(self, id_or_latest: str) -> Run | None:
         if id_or_latest == "latest":
+            latest_run: Run | None = None
             for path in self._list_run_files():
                 run = self._read_run_file(path)
-                if run is not None:
-                    return run
-            return None
+                if run is None:
+                    continue
+                if latest_run is None or run.created_at > latest_run.created_at:
+                    latest_run = run
+            return latest_run
 
         # Specific id: scan files sorted newest first, parse until match.
         for path in self._list_run_files():

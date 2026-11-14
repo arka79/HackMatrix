@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CI Doctor | Investigate Failing CI Runs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <meta name="description" content="CI Doctor investigates failing CI runs. Parses JUnit XML, detects flaky tests, and provides AI-powered root cause explanations.">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="brand-mark">CD</span>
+                <span class="brand-text">CI<span>Doctor</span></span>
+            </div>
+            <div class="nav-links">
+                <a href="#installation" class="nav-link active">Installation</a>
+                <a href="#quick-start" class="nav-link">Quick Start</a>
+                <a href="#commands" class="nav-link">Commands</a>
+                <a href="#examples" class="nav-link">Examples</a>
+                <a href="#debugging" class="nav-link">Debugging</a>
+                <a href="#faq" class="nav-link">FAQ</a>
+            </div>
+            <div class="nav-action">
+                <button class="theme-toggle" id="theme-toggle" title="Toggle theme">Dark</button>
+                <span class="admit-badge">ADMIT ONE</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero">
+        <div class="hero-grid-wrap">
+            <svg class="interactive-grid" width="100%" height="100%" aria-hidden="true">
+                <rect class="grid-cell" />
+            </svg>
+        </div>
+        <div class="container relative z-10">
+            <div class="hero-content">
+                <h1>Investigate failing CI runs.</h1>
+                <p class="hero-subtitle">CI Doctor parses JUnit XML, fingerprints failures, detects flaky tests, and asks AI to explain root causes.</p>
+                <div class="hero-actions">
+                    <button class="btn btn-primary btn-large" data-copy="pip install ci-doctor-arka">Install via pip</button>
+                    <button class="btn btn-ghost btn-large" onclick="scrollToSection('#commands')">View Commands</button>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <div class="stat-value">Python 3.11+</div>
+                        <div class="stat-label">Required</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">Gemini AI</div>
+                        <div class="stat-label">Primary provider</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">JUnit XML</div>
+                        <div class="label">Universal format</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">153 tests</div>
+                        <div class="stat-label">Passing</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Installation -->
+    <section id="installation" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Installation</h2>
+                <p class="section-intro">Choose your preferred installation method.</p>
+            </div>
+
+            <div class="install-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="badge badge-primary">Recommended</span>
+                        <h3>pip</h3>
+                    </div>
+                    <div class="code-block">
+<pre><code class="language-bash">pip install ci-doctor-arka</code></pre>
+                    </div>
+                    <button class="btn btn-primary btn-sm" data-copy="pip install ci-doctor-arka">Copy</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="badge badge-secondary">Container</span>
+                        <h3>Docker</h3>
+                    </div>
+                    <div class="code-block">
+<pre><code class="language-bash">docker run --rm -v $(pwd):/data \
+  -e GEMINI_API_KEY=your-key \
+  cidoctor:latest analyze /data/junit.xml \
+  --commit abc123 --branch main</code></pre>
+                    </div>
+                    <button class="btn btn-primary btn-sm" data-copy="docker run --rm -v $(pwd):/data -e GEMINI_API_KEY=your-key cidoctor:latest analyze /data/junit.xml --commit abc123 --branch main">Copy</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="badge badge-secondary">Source</span>
+                        <h3>From source</h3>
+                    </div>
+                    <div class="code-block">
+<pre><code class="language-bash">git clone https://github.com/arka79/HackMatrix.git
+cd HackMatrix
+uv sync --all-groups</code></pre>
+                    </div>
+                    <button class="btn btn-primary btn-sm" data-copy="git clone https://github.com/arka79/HackMatrix.git && cd HackMatrix && uv sync --all-groups">Copy</button>
+                </div>
+            </div>
+
+            <div class="verify-card card">
+                <div class="card-header">
+                    <span class="badge badge-info">Verify</span>
+                    <h3>Verify Installation</h3>
+                </div>
+                <div class="code-block">
+<pre><code class="language-bash">ci-doctor-arka --version</code></pre>
+                </div>
+                <button class="btn btn-primary btn-sm" data-copy="ci-doctor-arka --version">Copy</button>
+                <p class="card-note">Expected output: <span class="mono">ci-doctor-arka 0.1.0</span></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Start -->
+    <section id="quick-start" class="section section-alt">
+        <div class="container">
+            <div class="section-header">
+                <h2>Quick Start</h2>
+                <p class="section-intro">Get CI Doctor running in 5 minutes.</p>
+            </div>
+
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-badge">1</div>
+                    <div class="step-content">
+                        <h3>Initialize</h3>
+                        <p>Creates the config file and run history store directory.</p>
+                        <div class="code-block">
+<pre><code class="language-bash">ci-doctor-arka init</code></pre>
+                        </div>
+                        <button class="btn btn-ghost btn-sm" data-copy="ci-doctor-arka init">Copy</button>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-badge">2</div>
+                    <div class="step-content">
+                        <h3>Set Gemini API Key</h3>
+                        <p>Get a free key from <a href="https://aistudio.google.com/" target="_blank">Google AI Studio</a>.</p>
+                        <div class="code-block">
+<pre><code class="language-bash">export GEMINI_API_KEY=your-key-here</code></pre>
+                        </div>
+                        <button class="btn btn-ghost btn-sm" data-copy="export GEMINI_API_KEY=your-key-here">Copy</button>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-badge">3</div>
+                    <div class="step-content">
+                        <h3>Generate Demo Data</h3>
+                        <p>Create simulated test runs to try out the commands.</p>
+                        <div class="code-block">
+<pre><code class="language-bash">ci-doctor-arka demo seed</code></pre>
+                        </div>
+                        <button class="btn btn-ghost btn-sm" data-copy="ci-doctor-arka demo seed">Copy</button>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-badge">4</div>
+                    <div class="step-content">
+                        <h3>Analyze JUnit XML</h3>
+                        <p>Point at your CI's JUnit XML results file.</p>
+                        <div class="code-block">
+<pre><code class="language-bash">ci-doctor-arka analyze path/to/results.xml --commit abc123 --branch main</code></pre>
+                        </div>
+                        <button class="btn btn-ghost btn-sm" data-copy="ci-doctor-arka analyze path/to/results.xml --commit abc123 --branch main">Copy</button>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-badge">5</div>
+                    <div class="step-content">
+                        <h3>Get Root Cause</h3>
+                        <p>Ask AI to explain why tests failed.</p>
+                        <div class="code-block">
+<pre><code class="language-bash">ci-doctor-arka explain latest --provider gemini</code></pre>
+                        </div>
+                        <button class="btn btn-ghost btn-sm" data-copy="ci-doctor-arka explain latest --provider gemini">Copy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Commands -->
+    <section id="commands" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Command Reference</h2>
+                <p class="section-intro">All available CLI commands and their options.</p>
+            </div>
+
+            <div class="command-tabs">
+                <div class="tab-list">
+                    <button class="tab-btn active" data-tab="init">init</button>
+                    <button class="tab-btn" data-tab="analyze">analyze</button>
+                    <button class="tab-btn" data-tab="flaky">flaky</button>
+                    <button class="tab-btn" data-tab="explain">explain</button>
+                    <button class="tab-btn" data-tab="launch">launch</button>
+                    <button class="tab-btn" data-tab="comment">comment</button>
+                    <button class="tab-btn" data-tab="demo">demo seed</button>
+                </div>
+
+                <div class="tab-content active" id="tab-init">
+                    <div class="command-card">
+                        <div class="command-header">
+                            <span class="command-name">ci-doctor-arka init</span>
+                            <span class="command-arg">[path]</span>
+                        </div>
+                        <p class="command-desc">Write a default <span class="mono">cidoctor.toml</span> and create the <span class="mono">.cidoctor/runs/</span> directory.</p>
+                        <div class="code-block">
+<pre><code class="language-bash">ci-doctor-arka init [path]</code></pre>
+                        </div>
+                        <table class="option-table">
+                            <thead>
+                                <tr><th>Argument</th><th>Default</th><th>Description</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><span class="mono">path</span></td><td><span class="mono">cidoctor.toml</span></td><td>Path to the config file to write.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="tab-analyze">
+                    <div class="command-card">
+                        <div class="command-header">
+                            <span class="command-name">ci-doctor-arka analyze</span>
+                            <span class="command-arg">&lt;file&gt;</span>
+                        </div>
+                        <p class="command-desc">Parse a JUnit XML results file, fingerprint failures, and save the run.</p>
+                        <div class="code-block">
+<pre><code class="language-bash">ci-doctor-arka analyze &lt;file&gt; [options]</code></pre>
+                        </div>
+                        <table class="option-table">
+                            <thead>
+                                <tr><th>Option</th><th>Default</th><th>Description</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><span class="mono">&lt;file&gt;</span></td><td>Required</td><td>Path to the JUnit XML results file.</td></tr>
+                                <tr><td><span class="mono">--commit</span></td><td>Auto-detected</td><td>Commit SHA (auto-detected with git if omitted).</td></tr>
+                                <tr><td><span class="mono">--branch</span></td><td>Auto-detected</td><td>Branch name (auto-detected with git if omitted).</td></tr>
+                                <tr><td><span class="mono">--log</span></td><td>None</td><td>Path to a log file (accepted for interface parity).</td></tr>
+                                <tr><td><span class="mono">--format</span></td><td><span class="mono">table</span></td><td>Output format: <span class="mono">table</span> or <span class="mono">json</span>.</td></tr>
+                            </tbody>
+                        </table>
+                        <div class="example-box">
+                            <h4>Example</h4>
+                            <div class="code-block">
+<pre><code class="language-bash">ci-doctor-arka analyze junit.xml --commit abc123 --branch main --format json</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="tab-flaky">
+                    <div class="command-card">
+                        <div class="command-header">
+                            <span class="command-name">ci-doctor-arka flaky</span>
+                        </div>
+                        <p class="command-desc">Show flaky-test verdicts ranked by confidence from stored run history.</p>
+                        <div class="code-block">
+<pre><code class="language-bash">ci-doctor-arka flaky [options]</code></pre>
+                        </div>
+                        <table class="option-table">
+                            <thead>
+                                <tr><th>Option</th><th>Default</th><th>Description</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><span class="mono">--since</span></td><td><span class="mono">14d</span></td><td>Look back this long (e.g. <span class="mono">14d</span>, <span class="mono">12h</span>, <span class="mono">90m</span>).</td></tr>
+                                <tr><td><span class="mono">--min-runs</span></td><td>Config value</td><td>Minimum runs for a conclusive verdict.</td></tr>
+                                <tr><td><span class="mono">--format</span></td><td><span class="mono">table</span></td><td>Output format: <span class="mono">table</span> or <span class="mono">json</span>.</td></tr>
+                            </tbody>
+                        </table>
+                        <div class="example-box">
+                            <h4>Example</h4>
+                            <div class="code-block">
+<pre><code class="language-bash">ci-doctor-arka flaky --since 14d --format json</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="tab-explain">
+                    <div class="command-card">
+                        <div class="command-header">
+                            <span class="command-name">ci-doctor-arka explain</span>
+                            <span class="command-arg">[run-id]</span>
+                        </div>
+                        <p class="command-desc">Explain the root cause of a run's failures using Gemini or Ollama.</p>
+                        <div class="code-block">
+<pre><code class="language-bash">ci-doctor-arka explain [run-id] [options]</code></pre>
+                        </div>
+                        <table class="option-table">
+                            <thead>
+                                <tr><th>Option</th><th>Default</th><th>Description</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><span class="mono">run-id</span></td><td><span class="mono">latest</span></td><td>Run id or 'latest'.</td></tr>
+                                <tr><td><span class="mono">--provider</span></td><td><span class="mono">gemini</span></td><td>Provider name (e.g. <span class="mono">gemini</span>, <span class="mono">mock</span>).</td></tr>
+                                <tr><td><span class="mono">--model</span></td><td>Config value</td><td>Model name (provider-specific).</td></tr>
+                                <tr><td><span class="mono">--agent</span> / <span class="mono">--no-agent</span></td><td><span class="mono">--agent</span></td><td>Use the investigation agent (default on).</td></tr>
+                                <tr><td><span class="mono">--format</span></td><td><span class="mono">table</span></td><td>Output format: <span class="mono">table</span> or <span class="mono">json</span>.</td></tr>
+                            </tbody>
+                        </table>
+                        <div class="example-box">
+                            <h4>Example</h4>
+                            <div class="code-block">
+<pre><code class="language-bash">ci-doctor-arka explain latest --provider gemini --format json</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="tab-launch">
+                    <div class="command-card">
+                        <div class="command-header">
+                            <span class="command-name">ci-doctor-arka launch</span>
+                            <span class="command-arg">[run-id]</span>
+                        </div>
+                        <p class="command-desc">Discover models, pick one, and run the agent investigation.</p>
+                        <div class="code-block">
+<pre><code class="language-bash">ci-doctor-arka launch [run-id] [options]</code></pre>
+                        </div>
+                        <table class="option-table">
+                            <thead>
+                                <tr><th>Option</th><th>Default</th><th>Description</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><span class="mono">run-id</span></td><td><span class="mono">latest</span></td><td>Run id or 'latest'.</td></tr>
+                                <tr><td><span class="mono">--model</span>, <span class="mono">-m</span></td><td>None</td><td>Model name (e.g. <span class="mono">gemini-3.5-flash-lite</span>, <span class="mono">llama3</span>).</td></tr>
+                                <tr><td><span class="mono">--config</span></td><td>False</td><td>Save the model choice to cidoctor.toml and exit.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="tab-comment">
+                    <div class="command-card">
+                        <div class="command-header">
+                            <span class="command-name">ci-doctor-arka comment</span>
+                            <span class="command-arg">[run-id]</span>
+                        </div>
+                        <p class="command-desc">Post a CI Doctor report as a GitHub PR comment.</p>
+                        <div class="code-block">
+<pre><code class="language-bash">ci-doctor-arka comment [run-id] [options]</code></pre>
+                        </div>
+                        <table class="option-table">
+                            <thead>
+                                <tr><th>Option</th><th>Default</th><th>Description</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><span class="mono">run-id</span></td><td><span class="mono">latest</span></td><td>Run id or 'latest'.</td></tr>
+                                <tr><td><span class="mono">--dry-run</span></td><td>False</td><td>Print the comment body instead of posting.</td></tr>
+                            </tbody>
+                        </table>
+                        <div class="example-box">
+                            <h4>Example</h4>
+                            <div class="code-block">
+<pre><code class="language-bash">ci-doctor-arka comment latest --dry-run</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="tab-demo">
+                    <div class="command-card">
+                        <div class="command-header">
+                            <span class="command-name">ci-doctor-arka demo seed</span>
+                        </div>
+                        <p class="command-desc">Generate deterministic simulated demo data for testing.</p>
+                        <div class="code-block">
+<pre><code class="language-bash">ci-doctor-arka demo seed</code></pre>
+                        </div>
+                        <div class="example-box">
+                            <h4>What it creates</h4>
+                            <ul class="feature-list">
+                                <li>30 simulated runs (~60 tests each)</li>
+                                <li><span class="mono">test_00</span>: consistently failing</li>
+                                <li><span class="mono">test_01</span> and <span class="mono">test_02</span>: flaky (alternate pass/fail)</li>
+                                <li>Remaining tests: consistently passing</li>
+                            </ul>
+                            <div class="code-block">
+<pre><code class="language-bash">ci-doctor-arka demo seed</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Examples -->
+    <section id="examples" class="section section-alt">
+        <div class="container">
+            <div class="section-header">
+                <h2>Real-World Examples</h2>
+                <p class="section-intro">Common debugging scenarios with CI Doctor.</p>
+            </div>
+
+            <div class="example-grid">
+                <div class="card example-card">
+                    <h3>Debug a single failing build</h3>
+                    <p>Your CI build just failed. Find out why quickly.</p>
+                    <div class="code-block">
+<pre><code class="language-bash"># 1. Analyze the JUnit XML from your CI
+ci-doctor-arka analyze junit.xml --commit $(git rev-parse HEAD) --branch main
+
+# 2. See failure groups
+ci-doctor-arka analyze junit.xml --format json
+
+# 3. Get AI explanation
+ci-doctor-arka explain latest --provider gemini</code></pre>
+                    </div>
+                </div>
+
+                <div class="card example-card">
+                    <h3>Find flaky tests over 2 weeks</h3>
+                    <p>Identify tests that intermittently pass/fail.</p>
+                    <div class="code-block">
+<pre><code class="language-bash">ci-doctor-arka flaky --since 14d --format table</code></pre>
+                    </div>
+                    <p class="card-note">Look for verdicts of <span class="mono">flaky</span> or <span class="mono">failing</span> with high confidence.</p>
+                </div>
+
+                <div class="card example-card">
+                    <h3>Post a PR comment automatically</h3>
+                    <p>Add CI Doctor results to your GitHub PR.</p>
+                    <div class="code-block">
+<pre><code class="language-bash"># Preview first
+ci-doctor-arka comment latest --dry-run
+
+# Then post for real
+export GITHUB_TOKEN=your-token
+export GITHUB_REPOSITORY=owner/repo
+ci-doctor-arka comment latest</code></pre>
+                    </div>
+                </div>
+
+                <div class="card example-card">
+                    <h3>Use Ollama for offline AI</h3>
+                    <p>Run CI Doctor without sending data to external APIs.</p>
+                    <div class="code-block">
+<pre><code class="language-bash"># Pull a model
+ollama pull llama3
+
+# Launch investigation
+ci-doctor-arka launch latest --model llama3</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Debugging -->
+    <section id="debugging" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Debugging Guide</h2>
+                <p class="section-intro">How to use CI Doctor effectively for debugging.</p>
+            </div>
+
+            <div class="debug-grid">
+                <div class="card">
+                    <div class="step-badge">1</div>
+                    <h3>Analyze the failure</h3>
+                    <p>Start by parsing your JUnit XML to see what failed.</p>
+                    <div class="code-block">
+<pre><code class="language-bash">ci-doctor-arka analyze results.xml --commit abc123 --branch main --format json</code></pre>
+                    </div>
+                    <ul class="feature-list">
+                        <li>Check the <strong>failure groups</strong> section</li>
+                        <li>Note the fingerprint for each group</li>
+                        <li>Review the sample messages and affected tests</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="step-badge">2</div>
+                    <h3>Check if it's flaky</h3>
+                    <p>Determine if this is a one-off or recurring issue.</p>
+                    <div class="code-block">
+<pre><code class="language-bash">ci-doctor-arka flaky --since 14d</code></pre>
+                    </div>
+                    <ul class="feature-list">
+                        <li><span class="mono">failing</span> = consistent failure (likely a real bug)</li>
+                        <li><span class="mono">flaky</span> = intermittent (timing, race conditions)</li>
+                        <li><span class="mono">stable</span> = consistently passing</li>
+                        <li><span class="mono">insufficient_data</span> = not enough runs yet</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="step-badge">3</div>
+                    <h3>Get AI diagnosis</h3>
+                    <p>Ask Gemini to explain the root cause.</p>
+                    <div class="code-block">
+<pre><code class="language-bash">ci-doctor-arka explain latest --provider gemini</code></pre>
+                    </div>
+                    <ul class="feature-list">
+                        <li>Read the <strong>root cause</strong> and <strong>category</strong></li>
+                        <li>Apply the <strong>suggested fix</strong></li>
+                        <li>Check <strong>confidence</strong> score (0-1)</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="step-badge">4</div>
+                    <h3>Share with team</h3>
+                    <p>Post results to your PR or ticket.</p>
+                    <div class="code-block">
+<pre><code class="language-bash">ci-doctor-arka comment latest --dry-run</code></pre>
+                    </div>
+                    <ul class="feature-list">
+                        <li>Review the generated Markdown comment</li>
+                        <li>Post it to your GitHub PR</li>
+                        <li>Link to the CI run for context</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="troubleshooting">
+                <h3>Troubleshooting</h3>
+                <table class="option-table">
+                    <thead>
+                        <tr><th>Problem</th><th>Solution</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="mono">No parser found for path/to/file.xml</span></td>
+                            <td>Make sure the file exists and ends with <span class="mono">.xml</span>. Provide the full path.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="mono">GEMINI_API_KEY environment variable is not set</span></td>
+                            <td>Export your key: <span class="mono">export GEMINI_API_KEY=your-key</span>. Or use <span class="mono">--provider mock</span>.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="mono">Run 'latest' not found</span></td>
+                            <td>Run <span class="mono">ci-doctor-arka analyze</span> or <span class="mono">ci-doctor-arka demo seed</span> first to create runs.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="mono">No provider found for 'name'</span></td>
+                            <td>Use <span class="mono">gemini</span>, <span class="mono">ollama</span>, or <span class="mono">mock</span>. Check spelling.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="mono">Unknown model</span></td>
+                            <td>For Ollama: run <span class="mono">ollama pull &lt;model&gt;</span> first. For Gemini: check your API key has access.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="section section-alt">
+        <div class="container">
+            <div class="section-header">
+                <h2>FAQ</h2>
+            </div>
+
+            <div class="faq-list">
+                <div class="faq-item">
+                    <button class="faq-question">
+                        Does CI Doctor support non-Python projects?
+                        <span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes. CI Doctor parses JUnit XML, which is language-agnostic. It works with pytest (Python), Jest (JavaScript), Maven Surefire (Java), go-junit-report (Go), RSpec (Ruby), and more.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        Does it send my code to external AI?
+                        <span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Only if you use <span class="mono">--provider gemini</span>. Logs are redacted to remove secrets before sending. For offline use, use <span class="mono">--provider mock</span> or <span class="mono">--provider ollama</span> with a local model.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        What's the difference between 'flaky' and 'failing'?
+                        <span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p><span class="mono">failing</span> means the test consistently fails (pass rate near 0). <span class="mono">flaky</span> means it intermittently passes and fails (e.g., 50% pass rate). <span class="mono">stable</span> means it consistently passes.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        Can I use it in my CI pipeline?
+                        <span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes. Run <span class="mono">ci-doctor-arka analyze</span> after your tests, then <span class="mono">ci-doctor-arka comment</span> to post results to your PR. The exit code is 1 if any tests failed.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        Where is run history stored?
+                        <span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>In <span class="mono">.cidoctor/runs/</span> by default. You can change this in <span class="mono">cidoctor.toml</span> under <span class="mono">store_path</span>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-mark">CD</span>
+                    <span class="logo-text">CI<span>Doctor</span></span>
+                </div>
+                <p class="footer-text">Investigate failing CI runs with AI-powered root cause analysis.</p>
+                <div class="footer-links">
+                    <a href="https://pypi.org/project/ci-doctor-arka/" target="_blank">PyPI</a>
+                    <a href="#" target="_blank">GitHub</a>
+                    <a href="#installation">Installation</a>
+                    <a href="#commands">Commands</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 CI Doctor. Built for debugging CI failures.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

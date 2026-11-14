@@ -1,0 +1,335 @@
+
+==========================================
+RUNNING: uv run python -m cidoctor --help
+==========================================
+                                                                                                                                                                 
+ Usage: python -m cidoctor [OPTIONS] COMMAND [ARGS]...                                                                                                           
+                                                                                                                                                                 
+ CI Doctor: investigates failing CI runs.                                                                                                                        
+                                                                                                                                                                 
+╭─ Options ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ --version  -v      <bool>  Show the version and exit.                                                                                                         │
+│ --verbose          <bool>  Enable verbose logging.                                                                                                            │
+│ --help             <bool>  Show this message and exit.                                                                                                        │
+╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Commands ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ init     Write a default cidoctor.toml and create the .cidoctor/ directory.                                                                                   │
+│ analyze  Analyze a JUnit results file and report failures and flaky tests.                                                                                    │
+│ flaky    Show flaky-test verdicts ranked by confidence.                                                                                                       │
+│ explain  Explain the root cause of a run's failures.                                                                                                          │
+│ launch   Discover models, pick one, and run the agent investigation.                                                                                          │
+│ comment  Post a CI Doctor report as a GitHub PR comment.                                                                                                      │
+│ demo     Generate demo data.                                                                                                                                  │
+╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+
+==========================================
+RUNNING: uv run python -m cidoctor init
+==========================================
+cidoctor.toml already exists, skipping.
+Created .cidoctor/runs — consider adding .cidoctor/ to .gitignore
+
+==========================================
+RUNNING: uv run python -m cidoctor analyze results.xml
+==========================================
+
+Run main-fe75cdabe0ea
+  commit: fe75cdabe0eab1310b9fc9ae6c04a3650a6f29a9  branch: main
+  results: 154 tests
+   Test outcome    
+      summary      
+┏━━━━━━━━━┳━━━━━━━┓
+┃ Status  ┃ Count ┃
+┡━━━━━━━━━╇━━━━━━━┩
+│ passed  │   151 │
+│ failed  │     2 │
+│ error   │     0 │
+│ skipped │     1 │
+└─────────┴───────┘
+                                                    Failure groups (by fingerprint)                                                    
+┏━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Fingerprint  ┃ Count ┃ Sample message                                                                   ┃ Tests                     ┃
+┡━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ 25dbe96af87b │     1 │ FileNotFoundError: [Errno 2] No such file or directory: '/private/var/folders/nk │ test_e2e_from_built_wheel │
+│ aa4e34ea3bbd │     1 │ FileNotFoundError: [Errno 2] No such file or directory: '/private/var/folders/nk │ test_e2e_version          │
+└──────────────┴───────┴──────────────────────────────────────────────────────────────────────────────────┴───────────────────────────┘
+
+==========================================
+RUNNING: gh run list --limit 5
+==========================================
+completed	failure	Improve CI checks and upload JUnit reports	CI	main	push	43591980988	50s	2026-11-14T11:51:17Z
+completed	failure	Improve CI checks and upload JUnit reports	CI	main	push	43591980951	35s	2026-11-14T11:51:17Z
+completed	failure	Add JUnit report artifact to CI	CI	main	push	43591545653	15s	2026-11-14T11:45:38Z
+completed	failure	Add JUnit report artifact to CI	CI	main	push	43591544418	0s	2026-11-14T11:45:37Z
+completed	failure	Create main.yml	CI	main	push	43590374092	16s	2026-11-14T11:30:52Z
+
+==========================================
+RUNNING: uv run python -m cidoctor analyze .cidoctor/input/junit/junit.xml
+==========================================
+
+Run main-fe75cdabe0ea
+  commit: fe75cdabe0eab1310b9fc9ae6c04a3650a6f29a9  branch: main
+  results: 154 tests
+   Test outcome    
+      summary      
+┏━━━━━━━━━┳━━━━━━━┓
+┃ Status  ┃ Count ┃
+┡━━━━━━━━━╇━━━━━━━┩
+│ passed  │   150 │
+│ failed  │     3 │
+│ error   │     0 │
+│ skipped │     1 │
+└─────────┴───────┘
+                                                             Failure groups (by fingerprint)                                                             
+┏━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Fingerprint  ┃ Count ┃ Sample message                                                                   ┃ Tests                                       ┃
+┡━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ bedbfba2c089 │     2 │ FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-runner/p │ test_e2e_from_built_wheel, test_e2e_version │
+│ 93f8c2eec809 │     1 │ AssertionError: assert 'run-1' == 'run-2'                                        │ test_get_run_latest_returns_most_recent     │
+│              │       │                                                                                  │                                             │
+│              │       │   - run-2                                                                        │                                             │
+│              │       │   ?     ^                                                                        │                                             │
+│              │       │   + run-1                                                                        │                                             │
+│              │       │   ?                                                                              │                                             │
+└──────────────┴───────┴──────────────────────────────────────────────────────────────────────────────────┴─────────────────────────────────────────────┘
+
+==========================================
+RUNNING: uv run python -m cidoctor flaky
+==========================================
+                                                                       Flaky-test verdicts                                                                       
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Test                                                     ┃ Runs ┃ Pass rate ┃ Verdict ┃ Confidence ┃ Reason                                                   ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ test_00                                                  │  120 │      0.00 │ failing │       1.00 │ pass rate near zero over 120 run(s) (>= min_runs=10)     │
+│ test_e2e_from_built_wheel                                │   17 │      0.00 │ failing │       1.00 │ pass rate near zero over 17 run(s) (>= min_runs=10)      │
+│ test_e2e_version                                         │   17 │      0.00 │ failing │       1.00 │ pass rate near zero over 17 run(s) (>= min_runs=10)      │
+│ test_fail                                                │   12 │      0.00 │ failing │       1.00 │ pass rate near zero over 12 run(s) (>= min_runs=10)      │
+│ test_pip_audit_passes                                    │   17 │      0.00 │ failing │       1.00 │ pass rate near zero over 17 run(s) (>= min_runs=10)      │
+│ test_skip                                                │   12 │      0.00 │ failing │       1.00 │ pass rate near zero over 12 run(s) (>= min_runs=10)      │
+│ test_03                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_04                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_05                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_06                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_07                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_08                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_09                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_10                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_11                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_12                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_13                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_14                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_15                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_16                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_17                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_18                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_19                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_20                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_21                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_22                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_23                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_24                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_25                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_26                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_27                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_28                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_29                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_30                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_31                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_32                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_33                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_34                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_35                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_36                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_37                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_38                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_39                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_40                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_41                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_42                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_43                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_44                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_45                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_46                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_47                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_48                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_49                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_50                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_51                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_52                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_53                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_54                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_55                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_56                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_57                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_58                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_59                                                  │  120 │      1.00 │ stable  │       0.97 │ pass rate 1.00 above threshold 0.95                      │
+│ test_get_run_latest_returns_most_recent                  │   17 │      0.59 │ flaky   │       0.95 │ mixed pass and fail/error on the same commit             │
+│ test_flaky_verdict_validation                            │   34 │      1.00 │ stable  │       0.90 │ pass rate 1.00 above threshold 0.95                      │
+│ test_analysis_report_requires_results                    │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_analyze_10000_results_under_5s                      │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_analyze_directory_path_clean_error                  │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_analyze_exit_code_nonzero_on_failure                │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_analyze_json_output_shape                           │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_analyze_missing_file_clean_error                    │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_analyze_on_fixture                                  │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_atomic_write_leaves_no_partial_run                  │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_call_tool_unknown                                   │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_cli_version                                         │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_consistently_failing_sequence                       │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_corrupt_file_skipped_with_warning                   │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_defaults                                            │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_defusedxml_used_for_xml                             │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_demo_seed_then_flaky_flags_seeded_tests             │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_diagnosis_category_validation                       │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_diagnosis_rejects_bad_category                      │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_diagnosis_validation                                │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_different_exception_types_different_fingerprints    │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_directory_path_raises                               │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_env_vars_override_toml                              │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_evaluate_test_flaky                                 │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_explicit_overrides_win                              │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_failure_error_skipped_fixture                       │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_fewer_than_min_runs_is_insufficient_data            │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_find_similar_below_threshold                        │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_find_similar_returns_matches                        │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_fingerprints_are_deterministic                      │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_five_runs_never_high_confidence                     │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_five_runs_same_commit_mixed_is_not_high_confidence  │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_flaky_ranked_output                                 │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_flaky_verdict_rejects_bad_verdict                   │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_flaky_verdict_rejects_confidence_out_of_range       │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_gemini_429_then_retry_then_success                  │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_gemini_agent_model_final                            │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_gemini_agent_model_tool_call                        │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_gemini_invalid_json_raises_provider_error           │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_gemini_missing_api_key                              │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_gemini_prompt_injection_isolation                   │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_gemini_secrets_not_in_prompt                        │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_gemini_success                                      │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_gemini_truncation                                   │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_get_failure_groups                                  │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_get_failure_groups_unknown_run                      │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_get_git_diff_head                                   │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_get_git_diff_head_n                                 │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_get_git_diff_hex_sha                                │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_get_git_diff_rejects_hostile                        │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_get_run_unknown_returns_none                        │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_get_test_history                                    │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_group_failures_count                                │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_group_failures_counts_and_ordering                  │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_group_failures_skips_passed_and_skipped             │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_help_output                                         │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_hostile_run_id_chars_rejected                       │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_hostile_run_id_rejected                             │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_hostile_test_name_in_history                        │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_init_creates_config_and_store                       │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_invalid_env_value_raises                            │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_investigate_cap_enforced                            │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_investigate_fallback_on_bad_json                    │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_investigate_fallback_on_provider_error              │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_investigate_tools_then_final                        │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_investigate_unknown_tool_rejected                   │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_jest_junit_style_fixture                            │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_launch_config_saves_and_exits                       │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_launch_unknown_model_error                          │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_list_runs_branch_filter                             │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_list_runs_since_filter                              │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_load_from_nonexistent_file_uses_defaults            │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_main_branch_flaky_below_threshold                   │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_malformed_xml_raises                                │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_missing_file_raises                                 │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_multiple_suites_fixture                             │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_no_eval_in_src                                      │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_no_secrets_in_logs                                  │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_no_shell_true_in_src                                │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_normalize_strips_paths_keeps_basename               │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_normalize_strips_timestamps_and_uuids               │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_ollama_agent_model_fallback_after_two_invalid       │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_ollama_agent_model_final                            │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_ollama_agent_model_tool_call                        │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_ollama_diagnose_model_not_installed                 │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_ollama_diagnose_retry_then_success                  │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_ollama_diagnose_success                             │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_ollama_list_models                                  │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_ollama_list_models_connection_refused               │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_oversized_file_configurable_limit                   │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_oversized_file_raises                               │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_parse_duration                                      │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_parse_duration_invalid                              │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_pass_rate_excludes_skipped                          │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_passed_and_failed_same_commit_is_flaky              │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_path_traversal_rejected                             │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_pytest_style_fixture                                │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_read_file_dotenv_denied                             │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_read_file_git_dir_denied                            │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_read_file_id_rsa_denied                             │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_read_file_pem_denied                                │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_read_file_traversal_blocked                         │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_redact_aws_keys                                     │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_redact_bearer_token                                 │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_redact_extra_patterns                               │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_redact_github_tokens                                │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_redact_google_api_keys                              │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_redact_leaves_non_secrets                           │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_redact_name_value_secrets                           │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_redact_private_key_block                            │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_registry_finds_junit_and_rejects_unknown            │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_registry_gets_gemini                                │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_registry_rejects_unknown                            │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_resolve_model_empty_installed                       │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_resolve_model_gemini                                │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_resolve_model_ollama_installed                      │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_resolve_model_unknown_raises                        │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_resolve_model_unknown_with_hint                     │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_run_rejects_empty_id                                │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_run_validation_and_round_trip                       │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_same_commit_failed_and_skipped_is_not_flaky         │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_same_commit_mixed_is_flaky_strong_confidence        │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_same_commit_passed_and_skipped_is_not_flaky         │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_same_error_different_timestamps_uuid_paths_one_fin… │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_save_and_load_round_trip                            │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_sdk_round_trip                                      │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_secret_mask_filter_redacts_api_key                  │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_secret_mask_filter_redacts_bearer_token             │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_secret_mask_filter_redacts_password_env             │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_setup_logging_sets_level                            │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_stable_sequence                                     │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_symlink_skipped                                     │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_test_history_30_runs_10k_results_under_3s           │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_test_history_cache_avoids_reread                    │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_test_history_returns_shape                          │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_testresult_json_round_trip                          │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_testresult_minimal                                  │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_testresult_rejects_bad_status                       │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_testresult_rejects_empty_name                       │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_testresult_rejects_negative_duration                │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_toml_file_overrides_defaults                        │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_tool_output_caps                                    │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_tool_output_redacts_secrets                         │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_unknown_file_extension_rejected                     │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_unknown_override_raises                             │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_unknown_schema_version_skipped                      │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_version_output                                      │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_wilson_interval_known_values                        │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_wilson_interval_monotonic                           │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_xxe_attack_never_resolves_entities                  │   17 │      1.00 │ stable  │       0.82 │ pass rate 1.00 above threshold 0.95                      │
+│ test_pass                                                │   12 │      1.00 │ stable  │       0.76 │ pass rate 1.00 above threshold 0.95                      │
+│ test_01                                                  │  120 │      0.50 │ flaky   │       0.59 │ main-branch pass rate 0.50 below threshold 0.95 with     │
+│                                                          │      │           │         │            │ mixed outcomes                                           │
+│ test_02                                                  │  120 │      0.50 │ flaky   │       0.59 │ main-branch pass rate 0.50 below threshold 0.95 with     │
+│                                                          │      │           │         │            │ mixed outcomes                                           │
+└──────────────────────────────────────────────────────────┴──────┴───────────┴─────────┴────────────┴──────────────────────────────────────────────────────────┘
+
+==========================================
+RUNNING: uv run python -m cidoctor explain
+==========================================
+2026-11-14 18:07:52,192 INFO httpx2: HTTP Request: POST https://generativelanguage.googleapis.com/v1/models/gemini-3.5-flash-lite:generateContent "HTTP/1.1 400 Bad Request"
+2026-11-14 18:07:52,211 INFO google_genai.models: AFC is enabled with max remote calls: 10.
+2026-11-14 18:07:53,702 INFO httpx2: HTTP Request: POST https://generativelanguage.googleapis.com/v1/models/gemini-3.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+(agent fell back to single-request diagnosis)
+╭────────────────────────────────────────────────────────────────────────── Diagnosis ──────────────────────────────────────────────────────────────────────────╮
+│ Root cause: test_00 has a pass rate near zero over 120 runs, indicating a persistent failure in the test code.                                                │
+│ Category: test_bug                                                                                                                                            │
+│ Suggested fix: Investigate and fix test_00 implementation or underlying assertions.                                                                           │
+│ Confidence: 1.00                                                                                                                                              │
+╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯

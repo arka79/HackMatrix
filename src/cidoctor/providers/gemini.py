@@ -26,6 +26,22 @@ _REQUEST_TIMEOUT_SECONDS = 60
 _MAX_RETRIES = 3
 
 
+def _strip_additional_properties(schema: Any) -> Any:
+    """Recursively remove ``additionalProperties`` from a JSON schema.
+
+    Gemini's API rejects ``additionalProperties`` in response schemas, but
+    Pydantic v2 emits it when a model uses ``extra="forbid"``.
+    """
+    if isinstance(schema, dict):
+        schema.pop("additionalProperties", None)
+        for value in schema.values():
+            _strip_additional_properties(value)
+    elif isinstance(schema, list):
+        for item in schema:
+            _strip_additional_properties(item)
+    return schema
+
+
 class GeminiProvider:
     """Gemini-based diagnosis provider.
 
@@ -48,7 +64,7 @@ class GeminiProvider:
     def model(self) -> str:
         if self._model is not None:
             return self._model
-        return Settings().model or "gemini-1.5-flash"
+        return Settings().model or "gemini-3.5-flash-lite"
 
     def diagnose(self, evidence: Evidence) -> Diagnosis:
         """Return a :class:`Diagnosis` for ``evidence``.
@@ -88,10 +104,9 @@ class GeminiProvider:
                     contents=prompt,
                     config=types.GenerateContentConfig(
                         response_mime_type="application/json",
-                        response_schema=Diagnosis,
-                    ),
-                    http_options=types.HttpOptions(
-                        timeout=_REQUEST_TIMEOUT_SECONDS * 1000
+                        response_schema=_strip_additional_properties(
+                            Diagnosis.model_json_schema()
+                        ),
                     ),
                 )
                 raw = response.text or ""
@@ -205,7 +220,7 @@ class GeminiAgentModel:
         model: str | None = None,
         client: Any = None,
     ) -> None:
-        self._model = model or "gemini-1.5-flash"
+        self._model = model or "gemini-3.5-flash-lite"
         self.client = client
 
     def _ensure_client(self) -> Any:
@@ -269,9 +284,6 @@ class GeminiAgentModel:
                             mode=types.FunctionCallingConfigMode.NONE
                         )
                     ),
-                ),
-                http_options=types.HttpOptions(
-                    timeout=_REQUEST_TIMEOUT_SECONDS * 1000
                 ),
             )
         except Exception as exc:  # agent boundary

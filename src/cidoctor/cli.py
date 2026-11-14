@@ -479,7 +479,7 @@ def launch(
         "latest", help="Run id or 'latest'."
     ),
     model: str | None = typer.Option(
-        None, "--model", "-m", help="Model name (e.g. gemini-1.5-flash, llama3)."
+        None, "--model", "-m", help="Model name (e.g. gemini-3.5-flash-lite, llama3)."
     ),
     config: bool = typer.Option(
         False, "--config", help="Save the model choice to cidoctor.toml and exit."
@@ -505,7 +505,7 @@ def launch(
     # Build the candidate list: Gemini first (if API key set), then Ollama.
     candidates: list[str] = []
     if os.environ.get("GEMINI_API_KEY"):
-        candidates.append(settings.model or "gemini-1.5-flash")
+        candidates.append(settings.model or "gemini-3.5-flash-lite")
     candidates.extend(installed)
 
     if not candidates:

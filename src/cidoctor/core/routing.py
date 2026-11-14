@@ -25,7 +25,7 @@ def resolve_model(name: str, installed: list[str]) -> ProviderSpec:
     """Resolve a model name to a provider spec.
 
     Args:
-        name: model name (e.g. ``gemini-1.5-flash``, ``llama3``).
+        name: model name (e.g. ``gemini-3.5-flash-lite``, ``llama3``).
         installed: list of installed Ollama model names.
 
     Returns:
